@@ -19,10 +19,10 @@ use uuid::Uuid;
 const ENCLAVE_OVERLAY_CHOWN: &str = "0:0";
 const RELEASE_OVERLAY_CHOWN: &str = "0:0";
 
-const NITRO_CLI_IMAGE: &str = "registry.edgebit.io/nitro-cli:latest";
-const ODYN_IMAGE: &str = "registry.edgebit.io/odyn:latest";
+const NITRO_CLI_IMAGE: &str = "registry.edgebit.io/nitro-cli@sha256:e60304c83857bbada5288d7536817bf0da53a8790638f0d5ffa38d95ae4fb080";
+const ODYN_IMAGE: &str = "registry.edgebit.io/odyn@sha256:fb01cd2d789d5bed59353e3eceb093ed4466d3dab25037479d284647ed48a853";
 const ODYN_IMAGE_BINARY_PATH: &str = "/usr/local/bin/odyn";
-const RELEASE_BASE_IMAGE: &str = "registry.edgebit.io/enclaver-wrapper-base:latest";
+const RELEASE_BASE_IMAGE: &str = "registry.edgebit.io/enclaver-wrapper-base@sha256:9d03877a7d97dc1d187deff152dc1f7e440426f8245f7d4bc2b85017cd96c679";
 
 pub struct EnclaveArtifactBuilder {
     docker: Arc<Docker>,
