@@ -1,6 +1,6 @@
 use anyhow::Result;
 use clap::{Parser, Subcommand};
-use enclaver::constants::{EIF_FILE_NAME, MANIFEST_FILE_NAME, RELEASE_BUNDLE_DIR};
+use enclaver::constants::{EIF_FILE_NAME, MANIFEST_FILE_NAME};
 use enclaver::manifest::load_manifest_raw;
 use enclaver::nitro_cli::NitroCLI;
 use enclaver::run::{Enclave, EnclaveExitStatus, EnclaveOpts};
@@ -105,7 +105,7 @@ async fn run(args: Cli) -> Result<CLISuccess> {
 }
 
 async fn dump_manifest() -> Result<CLISuccess> {
-    let manifest_path = PathBuf::from(RELEASE_BUNDLE_DIR).join(MANIFEST_FILE_NAME);
+    let manifest_path = PathBuf::from(MANIFEST_FILE_NAME);
     let (raw_manifest, _) = load_manifest_raw(&manifest_path).await?;
     stdout().write_all(&raw_manifest).await?;
 
@@ -113,7 +113,7 @@ async fn dump_manifest() -> Result<CLISuccess> {
 }
 
 async fn describe_eif() -> Result<CLISuccess> {
-    let eif_path = PathBuf::from(RELEASE_BUNDLE_DIR).join(EIF_FILE_NAME);
+    let eif_path = PathBuf::from(EIF_FILE_NAME);
     let cli = NitroCLI::new();
     let eif_info = cli.describe_eif(&eif_path).await?;
     let eif_info_bytes = serde_json::to_vec_pretty(&eif_info)?;

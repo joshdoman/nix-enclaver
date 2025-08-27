@@ -2,11 +2,6 @@
 pub const EIF_FILE_NAME: &str = "application.eif";
 pub const MANIFEST_FILE_NAME: &str = "enclaver.yaml";
 
-pub const ENCLAVE_CONFIG_DIR: &str = "/etc/enclaver";
-pub const ENCLAVE_ODYN_PATH: &str = "/sbin/odyn";
-
-pub const RELEASE_BUNDLE_DIR: &str = "/enclave";
-
 // Port Constants
 
 // start "internal" ports above the 16-bit boundary (reserved for proxying TCP)
