@@ -81,6 +81,13 @@
               # 3. A function to build an EIF around a provided application
               makeAppEif = { appPackage, configFile }:
                 let
+                  # Parse the config file to extract the name
+                  configContent = builtins.readFile configFile;
+                  nameMatch = builtins.match ".*name: \"?([^\"\\n]+)\"?.*" configContent;
+                  eifName = if nameMatch != null
+                    then builtins.head nameMatch
+                    else "application";
+
                   entrypointScript = pkgs.writeShellScriptBin "start-enclaver" ''
                     #!${pkgs.pkgsStatic.busybox}/bin/sh
                     set -ex
@@ -137,16 +144,24 @@
                     cp -L ${configFile} $out/etc/enclaver/enclaver.yaml
                   '';
 
-                  # 3(b). Create the Final EIF Package
-                  enclaverEif = nitro-lib.buildEif {
-                    name = "enclaver-eif-${arch}";
+                  # 3(b). Create the base EIF (this will output image.eif)
+                  baseEif = nitro-lib.buildEif {
+                    name = "${eifName}-${arch}";
                     kernel = kernelImage;
                     kernelConfig = "${customKernel.configfile}";
-                    nsmKo = null; # The nsm.ko module is built-in to modern kernels
+                    nsmKo = null;
                     copyToRoot = enclaveRootFs;
                     entrypoint = "/bin/start-enclaver";
                     env = "";
                   };
+
+                  # 3(c). Copy and rename the EIF file
+                  enclaverEif = pkgs.runCommand "${eifName}-${arch}" {} ''
+                    mkdir -p $out
+                    cp ${baseEif}/* $out/
+                    cp ${baseEif}/image.eif $out/${eifName}.eif
+                    rm -f $out/image.eif
+                  '';
 
                 in {
                   eif = enclaverEif;
@@ -242,7 +257,7 @@
 
           devShells.default = pkgs.mkShell {
               buildInputs = with pkgs; [
-                rustToolchain
+                rust-bin.stable.latest.default
                 pkg-config
                 openssl
               ];

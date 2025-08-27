@@ -1,5 +1,5 @@
 use crate::constants::{
-    APP_LOG_PORT, EIF_FILE_NAME, HTTP_EGRESS_VSOCK_PORT, MANIFEST_FILE_NAME, RELEASE_BUNDLE_DIR,
+    APP_LOG_PORT, EIF_FILE_NAME, HTTP_EGRESS_VSOCK_PORT, MANIFEST_FILE_NAME,
     STATUS_PORT,
 };
 use crate::manifest::{load_manifest, Defaults, Manifest};
@@ -49,7 +49,7 @@ impl Enclave {
     pub async fn new(opts: EnclaveOpts) -> Result<Self> {
         let eif_path = match opts.eif_path {
             Some(eif_path) => eif_path,
-            None => PathBuf::from(RELEASE_BUNDLE_DIR).join(EIF_FILE_NAME),
+            None => PathBuf::from(EIF_FILE_NAME),
         };
 
         // Test that the EIF exists
@@ -59,7 +59,7 @@ impl Enclave {
 
         let manifest_path = match opts.manifest_path {
             Some(manifest_path) => manifest_path,
-            None => PathBuf::from(RELEASE_BUNDLE_DIR).join(MANIFEST_FILE_NAME),
+            None => PathBuf::from(MANIFEST_FILE_NAME),
         };
 
         let manifest = load_manifest(&manifest_path).await?;
