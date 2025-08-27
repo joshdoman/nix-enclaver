@@ -2,10 +2,6 @@
 
 extern crate core;
 
-pub mod build;
-
-mod images;
-
 pub mod constants;
 
 pub mod nitro_cli;
@@ -15,7 +11,6 @@ pub mod manifest;
 pub mod http_client;
 pub mod keypair;
 pub mod policy;
-pub mod run_container;
 
 #[cfg(feature = "run_enclave")]
 pub mod run;

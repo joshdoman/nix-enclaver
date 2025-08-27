@@ -37,7 +37,6 @@ pub fn init_logging(verbosity: u8) {
     }
 
     pretty_env_logger::formatted_builder()
-        .filter_module("bollard", level_filter(verbosity.saturating_sub(1)))
         .filter_module("hyper", level_filter(verbosity.saturating_sub(2)))
         .filter_module("tokio", level_filter(verbosity.saturating_sub(3)))
         .filter_module("tracing", level_filter(verbosity.saturating_sub(3)))

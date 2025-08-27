@@ -15,8 +15,6 @@ use tokio::io::AsyncReadExt;
 pub struct Manifest {
     pub version: String,
     pub name: String,
-    pub target: String,
-    pub sources: Sources,
     pub signature: Option<Signature>,
     pub ingress: Option<Vec<Ingress>>,
     pub egress: Option<Egress>,
@@ -127,16 +125,11 @@ mod tests {
         let raw_manifest = br#"
 version: v1
 name: "test"
-target: "target-image:latest"
-sources:
-  app: "app-image:latest"
 #r"#;
 
         let manifest = parse_manifest(raw_manifest).unwrap();
 
         assert_eq!(manifest.version, "v1");
         assert_eq!(manifest.name, "test");
-        assert_eq!(manifest.target, "target-image:latest");
-        assert_eq!(manifest.sources.app, "app-image:latest");
     }
 }
