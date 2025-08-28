@@ -46,7 +46,12 @@
               enclaverCrate = pkgsMusl.rustPlatform.buildRustPackage {
                 pname = "enclaver-app";
                 version = "0.1.0";
-                src = ./.;
+                src = pkgs.lib.cleanSourceWith {
+                  src = ./.;
+                  filter = path: type:
+                    let relativePath = pkgs.lib.removePrefix (toString ./. + "/") (toString path);
+                    in !(pkgs.lib.hasPrefix "examples/" relativePath);
+                };
 
                 # We only need the odyn supervisor now
                 buildFeatures = [ "odyn" ];
@@ -83,10 +88,10 @@
                 let
                   # Parse the config file to extract the name
                   configContent = builtins.readFile configFile;
-                  nameMatch = builtins.match ".*name: \"?([^\"\\n]+)\"?.*" configContent;
-                  eifName = if nameMatch != null
+                  nameMatch = builtins.match ".*name: \"?([^\"]+)\"?.*" configContent;
+                  eifName = pkgs.lib.replaceStrings ["-"] ["_"] (if nameMatch != null
                     then builtins.head nameMatch
-                    else "application";
+                    else "application");
 
                   entrypointScript = pkgs.writeShellScriptBin "start-enclaver" ''
                     #!${pkgs.pkgsStatic.busybox}/bin/sh
@@ -204,7 +209,12 @@
               enclaverRun = pkgsMusl.rustPlatform.buildRustPackage {
                 pname = "enclaver-run";
                 version = "0.1.0";
-                src = ./.;
+                src = pkgs.lib.cleanSourceWith {
+                  src = ./.;
+                  filter = path: type:
+                    let relativePath = pkgs.lib.removePrefix (toString ./. + "/") (toString path);
+                    in !(pkgs.lib.hasPrefix "examples/" relativePath);
+                };
                 buildFeatures = [ "run_enclave" ];
                 cargoLock.lockFile = ./Cargo.lock;
                 doCheck = false;

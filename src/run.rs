@@ -1,6 +1,5 @@
 use crate::constants::{
-    APP_LOG_PORT, EIF_FILE_NAME, HTTP_EGRESS_VSOCK_PORT, MANIFEST_FILE_NAME,
-    STATUS_PORT,
+    APP_LOG_PORT, EIF_FILE_NAME, HTTP_EGRESS_VSOCK_PORT, MANIFEST_FILE_NAME, STATUS_PORT,
 };
 use crate::manifest::{load_manifest, Defaults, Manifest};
 use crate::utils;
