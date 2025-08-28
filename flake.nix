@@ -50,7 +50,8 @@
                   src = ./.;
                   filter = path: type:
                     let relativePath = pkgs.lib.removePrefix (toString ./. + "/") (toString path);
-                    in !(pkgs.lib.hasPrefix "examples/" relativePath);
+                    in !(pkgs.lib.hasPrefix "examples/" relativePath) &&
+                       !(pkgs.lib.hasPrefix ".github/" relativePath);
                 };
 
                 # We only need the odyn supervisor now

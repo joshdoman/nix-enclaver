@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  RUSTFLAGS: --deny warnings
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - name: Check with default features
+        run: |
+          cargo clippy --quiet --no-deps
+
+      - name: Check all binaries
+        run: |
+          cargo clippy --quiet --no-deps --features=run_enclave,odyn
+
+      - name: Check with tracing enabled
+        env:
+          RUSTFLAGS: "--cfg=tokio_unstable"
+        run: |
+          cargo clippy --quiet --no-deps --features=run_enclave,odyn,tracing
+
+      - name: Format
+        run: cargo fmt --all -- --check
+
+  test:
+    name: Test default features
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Run default feature tests
+        run: cargo test
