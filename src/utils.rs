@@ -89,5 +89,4 @@ pub async fn register_shutdown_signal_handler() -> Result<impl Future> {
             _ = sigterm.recv() => (),
         }
     })
-    .map_err(Into::into)
 }

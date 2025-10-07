@@ -48,7 +48,11 @@ impl KmsProxyService {
                 let handler = KmsProxyHandler::new(kms_config);
 
                 // Set and env var to avoid configuring the port in two places
-                std::env::set_var("AWS_KMS_ENDPOINT", format!("http://127.0.0.1:{port}"));
+                unsafe {
+                    // SAFETY: While not 100% b/c it is a multi-threaded program, with 3rd party code,
+                    // we only get/set env vars in a ::start() methods that are serialized via .await.
+                    std::env::set_var("AWS_KMS_ENDPOINT", format!("http://127.0.0.1:{port}"));
+                }
 
                 Some(tokio::task::spawn(async move {
                     if let Err(err) = proxy.serve(handler).await {
