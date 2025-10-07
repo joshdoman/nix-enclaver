@@ -1,0 +1,112 @@
+name: Build Release
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-release-binaries:
+    strategy:
+      matrix:
+        include:
+          - target: 'x86_64-unknown-linux-musl'
+            host: 'ubuntu-latest'
+            uses_musl: true
+            extra_cargo_args: '--features=run_enclave'
+          - target: 'aarch64-unknown-linux-musl'
+            host: 'ubuntu-latest'
+            uses_musl: true
+            extra_cargo_args: '--features=run_enclave'
+
+    runs-on: ${{ matrix.host }}
+
+    permissions:
+      id-token: write
+      attestations: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: ${{ matrix.target }}
+          default: true
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
+
+      - name: Build Release Binaries (native cargo)
+        run: |
+          cargo build \
+          --target ${{ matrix.target }} \
+          --manifest-path Cargo.toml \
+          --release \
+          ${{ matrix.extra_cargo_args }}
+
+      - name: Generate a SLSA provenance attestation
+        uses: actions/attest-build-provenance@v3
+        with:
+          subject-path: "target/*/release/enclaver"
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.target }}
+          path: |
+            target/${{ matrix.target }}/release/enclaver
+
+
+  upload-release-artifact:
+    if: github.repository == 'joshdoman/nix-enclaver' && github.ref_type == 'tag'
+    needs: build-release-binaries
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: 'write'
+
+    strategy:
+      matrix:
+        include:
+          - target: 'x86_64-unknown-linux-musl'
+            release_name: 'enclaver-linux-x86_64'
+            delay: 60
+          - target: 'aarch64-unknown-linux-musl'
+            release_name: 'enclaver-linux-aarch64'
+            delay: 120
+
+    steps:
+      - name: Download Binaries
+        uses: actions/download-artifact@v4
+
+      - name: Construct Release Artifact
+        shell: bash
+        run: |
+          echo Delaying for ${{ matrix.delay }} secs
+          sleep ${{ matrix.delay }}
+          echo Proceeding
+
+          release_dir="${{ matrix.release_name }}-${{ github.ref_name }}"
+
+          mkdir ${release_dir}
+          mv ${{ matrix.target }}/enclaver ${release_dir}/enclaver
+          chmod 755 ${release_dir}/enclaver
+          tar -czf ${release_dir}.tar.gz ${release_dir}
+          sha256sum ${release_dir}.tar.gz > ${release_dir}.tar.gz.sha256
+
+      - name: Upload Artifact to GH Release
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          tag_name: ${{ github.ref_name }}
+          files: |
+            ${{ matrix.release_name }}-${{ github.ref_name }}.tar.gz
+            ${{ matrix.release_name }}-${{ github.ref_name }}.tar.gz.sha256
