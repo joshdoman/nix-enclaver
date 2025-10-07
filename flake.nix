@@ -6,7 +6,7 @@
     rust-overlay.url = "github:oxalica/rust-overlay";
     flake-utils.url = "github:numtide/flake-utils";
     nitro-util = {
-      url = "github:monzo/aws-nitro-util";
+      url = "github:monzo/aws-nitro-util/96f3bb204536dce32882a7e4affd6e8cea828b48";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

@@ -54,6 +54,7 @@
       "original": {
         "owner": "monzo",
         "repo": "aws-nitro-util",
+        "rev": "96f3bb204536dce32882a7e4affd6e8cea828b48",
         "type": "github"
       }
     },
