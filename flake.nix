@@ -207,9 +207,9 @@
                 configFile = defaultConfig;
               };
 
-              # Build enclaver-run for this target
+              # Build enclaver for this target
               enclaverRun = pkgsMusl.rustPlatform.buildRustPackage {
-                pname = "enclaver-run";
+                pname = "enclaver";
                 version = "0.1.0";
                 src = pkgs.lib.cleanSourceWith {
                   src = ./.;
@@ -226,7 +226,7 @@
             in {
               inherit makeAppEif;
               eif = defaultBuild.eif;
-              enclaver-run = enclaverRun;
+              enclaver = enclaverRun;
               app = enclaverCrate;
               rootfs = defaultBuild.rootfs;
             };
@@ -253,14 +253,14 @@
           packages = {
             # Default to native for local dev/testing
             default = nativePackages.eif;
-            enclaver-run = nativePackages.enclaver-run;
+            enclaver = nativePackages.enclaver;
             rootfs = nativePackages.rootfs;
 
             # Explicit targets for production builds
             x86_64-eif = x86Packages.eif;
             aarch64-eif = aarch64Packages.eif;
-            x86_64-enclaver-run = x86Packages.enclaver-run;
-            aarch64-enclaver-run = aarch64Packages.enclaver-run;
+            x86_64-enclaver = x86Packages.enclaver;
+            aarch64-enclaver = aarch64Packages.enclaver;
 
             # Convenience aliases
             intel-eif = x86Packages.eif;

@@ -40,7 +40,7 @@ This server is designed as a minimal, secure core. It provides a deterministic, 
 ## Usage
 
 1.  **Build** the EIF file with Nix using `nix build .x86_64-eif` or `nix build .aarch64-eif`.
-2.  **Deploy** the EIF to a Nitro-enabled EC2 instance and run it using `enclaver-run`.
+2.  **Deploy** the EIF to a Nitro-enabled EC2 instance and run it using `enclaver`.
 3.  **Configure** an AWS KMS key with a policy that allows your enclave's `PCR0` hash to call `kms:DeriveSharedSecret`.
 4.  **Generate the Secret**:
     ```bash

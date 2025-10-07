@@ -179,7 +179,7 @@ impl Enclave {
 
     async fn start_ingress_proxies(&mut self, cid: u32) -> Result<()> {
         let ingress = match &self.manifest.ingress {
-            Some(ref ingress) => ingress,
+            Some(ingress) => ingress,
             None => {
                 info!("no ingress defined, no ingress proxies will be started");
                 return Ok(());

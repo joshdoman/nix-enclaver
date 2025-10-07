@@ -1,10 +1,10 @@
 # nix-enclaver
 
-This repo contains a Nix flake to reproducibly build and run AWS Nitro enclave image files, with proxies inside and outside of the enclave for HTTP and KMS requests. It is a fork of [enclaver](https://github.com/enclaver-io/enclaver) by EdgeBit.io, modified to support reproducible builds. The underlying architecture is the same, except dockerization has been replaced with Nix.
+This repo contains a Nix flake to reproducibly build and run AWS Nitro enclave image files, with proxies inside and outside of the enclave for HTTP and KMS requests. This repo is a fork of [enclaver](https://github.com/enclaver-io/enclaver) by EdgeBit.io, modified to support reproducible builds using Nix. The underlying architecture is the same, except dockerization has been replaced with Nix.
 
 ## Architecture
 
-This repo uses the same underyling architecture as [enclaver](https://github.com/enclaver-io/enclaver), without modifications except to the build process. Read the [architecture doc](https://github.com/enclaver-io/enclaver/docs/architecture.md) for the full details.
+This repo uses the same underyling architecture as [enclaver](https://github.com/enclaver-io/enclaver), without modifications except to the build process. See [enclaver.io](https://enclaver.io/docs/0.x/getting-started/) for more details.
 
 ## Usage
 
@@ -29,16 +29,16 @@ eifBuild = aarch64.makeAppEif {
 
 ### Running the EIF
 
-To run the EIF, use `enclaver-run`. This will deploy both the Enclave image file and the outer proxy, which is needed to communicate with the enclave.
+To run the EIF, run `./enclaver`. This will deploy both the Enclave image file and the outer proxy, which is needed to communicate with the enclave.
 
 You can build the binary using:
 
 ```
-nix build .#enclaver-run
+nix build .#enclaver
 ```
 
 ## Examples
 
 You can find examples in [`examples/`](./examples/sealing-rs/README.md).
 
-Note that you need to install [Nix](https://nixos.org/) and [enable flakes](https://nixos.wiki/wiki/Flakes) to use this repo. If you are on MacOS, you will need to first use a Linux VM, like [LimaVM](https://lima-vm.io).
+Note that you need to install [Nix](https://nixos.org/) and [enable flakes](https://nixos.wiki/wiki/Flakes) to use this repo. If you are on MacOS, use a Linux VM, like [LimaVM](https://lima-vm.io).
