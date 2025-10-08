@@ -44,13 +44,14 @@ jobs:
         with:
           key: ${{ matrix.target }}
 
-      - name: Build Release Binaries (native cargo)
-        run: |
-          cargo build \
-          --target ${{ matrix.target }} \
-          --manifest-path Cargo.toml \
-          --release \
-          ${{ matrix.extra_cargo_args }}
+      - name: Build Release Binaries (cargo-zigbuild)
+        uses: ./.github/actions/cargo-zigbuild
+        with:
+          args: |
+            --target ${{ matrix.target }}
+            --manifest-path Cargo.toml
+            --release
+            ${{ matrix.extra_cargo_args }}
 
       - name: Generate a SLSA provenance attestation
         uses: actions/attest-build-provenance@v3
